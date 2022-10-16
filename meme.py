@@ -26,7 +26,9 @@ def generate_meme(path=None, body=None, author=None):
         images = "./_data/photos/dog/"
         imgs = []
         for root, _, files in os.walk(images):
-            imgs = [os.path.join(root, name) for name in files]
+            imgs = [os.path.join(root, name) 
+                    for name in files 
+                    if '.DS_Store' not in name]
 
         img = random.choice(imgs)
     else:

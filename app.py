@@ -35,7 +35,9 @@ def setup():
 
     # Use the pythons standard library os class to find all
     # images within the images images_path directory
-    _imgs = [images_path + f for f in os.listdir(images_path)]
+    _imgs = [images_path + f 
+            for f in os.listdir(images_path)
+            if '.DS_Store' not in f]
 
     return _quotes, _imgs
 
