@@ -8,7 +8,7 @@ import os
 import random
 import itertools
 import requests
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, url_for
 
 from QuoteEngine import Ingestor
 from MemeEngine import MemeEngine
@@ -35,9 +35,9 @@ def setup():
 
     # Use the pythons standard library os class to find all
     # images within the images images_path directory
-    _imgs = [images_path + f 
-            for f in os.listdir(images_path)
-            if '.DS_Store' not in f]
+    _imgs = [images_path + f
+             for f in os.listdir(images_path)
+             if '.DS_Store' not in f]
 
     return _quotes, _imgs
 
@@ -77,17 +77,20 @@ def meme_post():
     body = request.form.get("body")
     author = request.form.get("author")
 
-    # save the image to a temporary location
-    img_content = requests.get(img, stream=True, timeout=5).content
-    with open(temp_img, 'wb') as f:
-        f.write(img_content)
+    try:
+        # save the image to a temporary location
+        img_content = requests.get(img, stream=True, timeout=5).content
+        with open(temp_img, 'wb') as f:
+            f.write(img_content)
 
-    # Use the meme object to generate a meme using this temp
-    # file and the body and author form paramaters.
-    path = meme.make_meme(temp_img, body, author)
+        # Use the meme object to generate a meme using this temp
+        # file and the body and author form paramaters.
+        path = meme.make_meme(temp_img, body, author)
+        # Remove the temporary saved image.
+        os.remove(temp_img)
 
-    # Remove the temporary saved image.
-    os.remove(temp_img)
+    except:
+        return redirect(url_for('meme_form'))
 
     return render_template('meme.html', path=path)
 

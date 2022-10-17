@@ -26,12 +26,15 @@ def generate_meme(path=None, body=None, author=None):
         images = "./_data/photos/dog/"
         imgs = []
         for root, _, files in os.walk(images):
-            imgs = [os.path.join(root, name) 
-                    for name in files 
+            imgs = [os.path.join(root, name)
+                    for name in files
                     if '.DS_Store' not in name]
 
         img = random.choice(imgs)
     else:
+        if path.split('.')[-1] != 'jpg':
+            raise Exception(f'Unsupported file type inserted. '
+                            f'Expecting .jpg, .{path.split(".")[-1]} found')
         img = path
 
     if body is None:
